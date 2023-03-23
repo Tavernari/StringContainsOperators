@@ -41,8 +41,8 @@ public func && (lhs: StringPredicate, rhs: String) -> StringPredicate {
     return .andPredicates(rhs, lhs)
 }
 
-public extension String {
-    func contains(_ predicate: StringPredicate) -> Bool {
+extension String {
+    func contains(_ predicate: StringPredicate, diacriticAndCaseInsensitive: Bool = false) -> Bool {
 
         switch predicate {
 
@@ -50,18 +50,36 @@ public extension String {
             return self.contains(predicate)
 
         case let .or(strings):
-            return strings.contains(where: self.contains)
+            if diacriticAndCaseInsensitive {
+                return strings.contains(where: self.contains)
+            } else {
+                return strings.contains(where: { self.containsIgnoringDiacriticsAndCase($0) })
+            }
 
         case let .orPredicates(value, predicate):
-            return self.contains(predicate) || self.contains(.or([value]))
+            let str = diacriticAndCaseInsensitive ? value : value.removeDiacriticsAndCase()
+            return self.contains(predicate, diacriticAndCaseInsensitive: diacriticAndCaseInsensitive) || self.contains(.or([str]), diacriticAndCaseInsensitive: diacriticAndCaseInsensitive)
 
         case let .and(strings):
-            return strings.allSatisfy(self.contains)
+            if diacriticAndCaseInsensitive {
+                return strings.allSatisfy(self.contains)
+            } else {
+                return strings.allSatisfy({ self.containsIgnoringDiacriticsAndCase($0) })
+            }
 
         case let .andPredicates(value, predicate):
-            return self.contains(predicate) && self.contains(.and([value]))
+            let str = diacriticAndCaseInsensitive ? value : value.removeDiacriticsAndCase()
+            return self.contains(predicate, diacriticAndCaseInsensitive: diacriticAndCaseInsensitive) && self.contains(.and([str]), diacriticAndCaseInsensitive: diacriticAndCaseInsensitive)
         }
     }
+
+    func containsIgnoringDiacriticsAndCase(_ other: String) -> Bool {
+        let lhs = self.removeDiacriticsAndCase()
+        let rhs = other.removeDiacriticsAndCase()
+        return lhs.contains(rhs)
+    }
+
+    private func removeDiacriticsAndCase() -> String {
+        return folding(options: .diacriticInsensitive, locale: Locale.current).lowercased()
+    }
 }
-
-
