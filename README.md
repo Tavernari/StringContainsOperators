@@ -1,38 +1,31 @@
-# StringContainsOperators
+![Swift](https://github.com/Tavernari/StringContainsOperators/actions/workflows/swift.yml/badge.svg?branch=main)
+[![Maintainability](https://api.codeclimate.com/v1/badges/29ffa494572357c62162/maintainability)](https://codeclimate.com/github/Tavernari/StringContainsOperators/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/29ffa494572357c62162/test_coverage)](https://codeclimate.com/github/Tavernari/StringContainsOperators/test_coverage)
 
-StringContainsOperators is a Swift library for creating and evaluating complex string predicates using custom operators. This library provides an easy-to-use and flexible solution for matching strings against complex patterns.
+# 🐞 StringContainsOperators
 
-## How to Use
+StringContainsOperators is a Swift library that simplifies searching for multiple strings within a given text. By using custom infix operators and predicates, you can create complex and flexible search patterns that make it easy to find if strings exist in your text.
 
-The library provides three main components: custom operators, an enum type, and an extension to the String class.
+## Usage
 
-## Custom Operators
-
-StringContainsOperators provides two custom operators: || and &&. These operators are used to create OR and AND predicates, respectively, between two strings or between a string and another predicate.
-
-For example, you can create an OR predicate between two strings as follows:
+Here's a quick example of how you can use StringContainsOperators:
 
 ```swift
-let predicate = "hello" || "world"
-```
-This creates a predicate that matches any string that contains either "hello" or "world". Similarly, you can create an AND predicate between two strings like this:
+import StringContainsOperators
 
-```swift
-let predicate = "hello" && "world"
-```
-This creates a predicate that matches any string that contains both "hello" and "world".
+let text = "The quick brown fox jumps over the lazy dog."
 
-## Enum Type
+// Check if text contains "quick" OR "jumps"
+let result1 = text.contains("quick" || "jumps")
+print(result1) // true
 
-The resulting predicate is represented by an enum type called StringPredicate. This enum type can be either a base predicate, an OR predicate, or an AND predicate.
+// Check if text contains "fox" AND "dog"
+let result2 = text.contains("fox" && "dog")
+print(result2) // true
 
-## Extension to String
-
-The contains() function, which is an extension of the String class, is used to evaluate whether a given string satisfies a particular predicate. The function takes a StringPredicate as input and returns a boolean value indicating whether the predicate is true or false.
-
-```swift
-let result = "hello world".contains("hello" || "world")
-print(result) // true
+// Check if text contains "fox" AND ("jumps" OR "swift")
+let result3 = text.contains("fox" && ("jumps" || "swift"))
+print(result3) // true
 ```
 
 ## How to Install
