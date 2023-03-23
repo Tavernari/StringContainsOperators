@@ -6,6 +6,8 @@
 
 StringContainsOperators is a Swift library that simplifies searching for multiple strings within a given text. By using custom infix operators and predicates, you can create complex and flexible search patterns that make it easy to find if strings exist in your text.
 
+![Example](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTQxZTA5NzMyNGQ0NjQ2YzY2YmI4OGY5ODZjNGJiNWViNmI0OWE3OSZjdD1n/aWYYLfaHwbQAtuuWAM/giphy.gif)
+
 ## Usage
 
 Here's a quick example of how you can use StringContainsOperators:
@@ -43,7 +45,7 @@ print(result5) // true
 You can install StringContainsOperators using Swift Package Manager (SPM). Simply add the following line to your dependencies in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/Tavernari/StringContainsOperators.git", from: "1.0.0")
+.package(url: "https://github.com/Tavernari/StringContainsOperators.git", from: "1.1.1")
 ```
 
 ### Cocoapods
