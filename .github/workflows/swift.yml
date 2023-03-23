@@ -1,0 +1,29 @@
+name: Swift
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Get Sources
+        uses: actions/checkout@v2
+
+      - name: Build Package
+        run: swift build -v
+        
+      - name: Test & publish code coverage to Code Climate
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: swift test --enable-code-coverage
+          debug: true
+          coverageLocations: ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
+            
+  
