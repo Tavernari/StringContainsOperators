@@ -1,3 +1,9 @@
+//
+//  StringContainsOperators.swift
+//
+//
+//  Created by Victor C Tavernari on 23/03/2023.
+//
 import Foundation
 
 infix operator || : LogicalDisjunctionPrecedence
@@ -83,6 +89,7 @@ public prefix func ~ (value: String) -> StringPredicate {
     return .diacriticAndCaseInsensitive(value)
 }
 
+
 public extension String {
 
     /// Returns a Boolean value indicating whether the string contains the given `StringPredicate`.
@@ -91,39 +98,7 @@ public extension String {
     /// - Returns: `true` if the string contains the `StringPredicate`, `false` otherwise.
     func contains(_ predicate: StringPredicate) -> Bool {
 
-        switch predicate {
-
-        case let .or(strings):
-            return strings.contains(where: self.contains)
-
-        case let .orPredicates(value, predicate):
-            return self.contains(predicate) || self.contains(.or([value]))
-
-        case let .orOnlyPredicates(predicates):
-            return predicates.contains(where: self.contains)
-
-        case let .and(strings):
-            return strings.allSatisfy(self.contains)
-
-        case let .andPredicates(value, predicate):
-            return self.contains(predicate) && self.contains(.and([value]))
-
-        case let .andOnlyPredicates(predicates):
-            return predicates.allSatisfy(self.contains)
-
-        case let .diacriticAndCaseInsensitive(value):
-
-            return self.removeDiacriticsAndCase()
-                .lowercased()
-                .contains(value
-                    .removeDiacriticsAndCase()
-                    .lowercased())
-        }
-    }
-
-    private func removeDiacriticsAndCase() -> String {
-
-        return folding(options: .diacriticInsensitive,
-                       locale: Locale.current)
+        let strategy = SearchStrategyMaker.make(predicate: predicate)
+        return strategy.evaluate(string: self)
     }
 }

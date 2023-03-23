@@ -1,3 +1,9 @@
+//
+//  StringContainsOperatorsTests.swift
+//
+//
+//  Created by Victor C Tavernari on 23/03/2023.
+//
 import XCTest
 @testable import StringContainsOperators
 
