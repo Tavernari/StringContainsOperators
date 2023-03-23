@@ -2,13 +2,17 @@ import Foundation
 
 infix operator || : LogicalDisjunctionPrecedence
 infix operator && : LogicalConjunctionPrecedence
+prefix operator ~
 
 public indirect enum StringPredicate {
     case base(StringPredicate)
     case or([String])
     case orPredicates(String, StringPredicate)
+    case orOnlyPredicates([StringPredicate])
     case and([String])
     case andPredicates(String, StringPredicate)
+    case andOnlyPredicates([StringPredicate])
+    case diacriticAndCaseInsensitive(String)
 }
 
 public func || (lhs: String, rhs: String) -> StringPredicate {
@@ -26,6 +30,11 @@ public func || (lhs: StringPredicate, rhs: String) -> StringPredicate {
     return .orPredicates(rhs, lhs)
 }
 
+public func || (lhs: StringPredicate, rhs: StringPredicate) -> StringPredicate {
+
+    return .orOnlyPredicates([rhs, lhs])
+}
+
 public func && (lhs: String, rhs: String) -> StringPredicate {
 
     return .base(.and([lhs, rhs]))
@@ -41,45 +50,55 @@ public func && (lhs: StringPredicate, rhs: String) -> StringPredicate {
     return .andPredicates(rhs, lhs)
 }
 
+public func && (lhs: StringPredicate, rhs: StringPredicate) -> StringPredicate {
+
+    return .andOnlyPredicates([rhs, lhs])
+}
+
+public prefix func ~ (value: String) -> StringPredicate {
+
+    return .diacriticAndCaseInsensitive(value)
+}
+
 public extension String {
-    func contains(_ predicate: StringPredicate, diacriticAndCaseInsensitive: Bool = false) -> Bool {
+    func contains(_ predicate: StringPredicate) -> Bool {
 
         switch predicate {
 
-        case let .base(predicate):
-            return self.contains(predicate)
+        case let .base(value):
+            return self.contains(value)
 
         case let .or(strings):
-            if diacriticAndCaseInsensitive {
-                return strings.contains(where: self.contains)
-            } else {
-                return strings.contains(where: { self.containsIgnoringDiacriticsAndCase($0) })
-            }
+            return strings.contains(where: self.contains)
 
         case let .orPredicates(value, predicate):
-            let str = diacriticAndCaseInsensitive ? value : value.removeDiacriticsAndCase()
-            return self.contains(predicate, diacriticAndCaseInsensitive: diacriticAndCaseInsensitive) || self.contains(.or([str]), diacriticAndCaseInsensitive: diacriticAndCaseInsensitive)
+            return self.contains(predicate) || self.contains(.or([value]))
+
+        case let .orOnlyPredicates(predicates):
+            return predicates.contains(where: self.contains)
 
         case let .and(strings):
-            if diacriticAndCaseInsensitive {
-                return strings.allSatisfy(self.contains)
-            } else {
-                return strings.allSatisfy({ self.containsIgnoringDiacriticsAndCase($0) })
-            }
+            return strings.allSatisfy(self.contains)
 
         case let .andPredicates(value, predicate):
-            let str = diacriticAndCaseInsensitive ? value : value.removeDiacriticsAndCase()
-            return self.contains(predicate, diacriticAndCaseInsensitive: diacriticAndCaseInsensitive) && self.contains(.and([str]), diacriticAndCaseInsensitive: diacriticAndCaseInsensitive)
+            return self.contains(predicate) && self.contains(.and([value]))
+
+        case let .andOnlyPredicates(predicates):
+            return predicates.allSatisfy(self.contains)
+
+        case let .diacriticAndCaseInsensitive(value):
+
+            return self.removeDiacriticsAndCase()
+                .lowercased()
+                .contains(value
+                    .removeDiacriticsAndCase()
+                    .lowercased())
         }
     }
 
-    func containsIgnoringDiacriticsAndCase(_ other: String) -> Bool {
-        let lhs = self.removeDiacriticsAndCase()
-        let rhs = other.removeDiacriticsAndCase()
-        return lhs.contains(rhs)
-    }
-
     private func removeDiacriticsAndCase() -> String {
-        return folding(options: .diacriticInsensitive, locale: Locale.current).lowercased()
+
+        return folding(options: .diacriticInsensitive,
+                       locale: Locale.current)
     }
 }

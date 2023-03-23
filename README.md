@@ -26,6 +26,14 @@ print(result2) // true
 // Check if text contains "fox" AND ("jumps" OR "swift")
 let result3 = text.contains("fox" && ("jumps" || "swift"))
 print(result3) // true
+
+// Check if text contains "Brown" OR "red" case insensitively and without diacritics
+let result4 = text.contains(~"Brown" || ~"red")
+print(result4) // true
+
+// Check if text contains "fox" AND ("Jumps" OR "swift") case insensitively and without diacritics
+let result5 = text.contains(~"fox" && (~"Jumps" || ~"swift"))
+print(result5) // true
 ```
 
 ## How to Install
@@ -43,7 +51,7 @@ You can install StringContainsOperators using Swift Package Manager (SPM). Simpl
 You can also install StringContainsOperators using CocoaPods. Simply add the following line to your Podfile:
 
 ```ruby
-pod 'StringContainsOperators', '~> 1.0'
+pod 'StringContainsOperators', '~> 1.1'
 ```
 
 ## Contributions
