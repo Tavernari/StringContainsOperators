@@ -145,7 +145,6 @@ public prefix func =~ (value: String) -> StringPredicate {
     return .regexp(value)
 }
 
-
 /// Returns a `StringPredicate` that negates another `StringPredicate`.
 ///
 /// - Parameter predicate: The predicate to be negated.
