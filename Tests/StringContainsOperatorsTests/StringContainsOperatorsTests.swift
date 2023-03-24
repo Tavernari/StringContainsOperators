@@ -102,4 +102,15 @@ final class StringContainsOperatorsTests: XCTestCase {
         XCTAssertTrue("wORLD-".contains(predicate))
         XCTAssertFalse("Goodbye".contains(predicate))
     }
+
+    func testNegatablePredicate() {
+        let text = "Hello my little friend"
+
+        XCTAssertTrue(text.contains(!"fiance"))
+        XCTAssertFalse(text.contains(!"my"))
+        XCTAssertTrue(text.contains(!("enemy" && "little")))
+        XCTAssertFalse(text.contains(!("friend" && "little")))
+        XCTAssertTrue(text.contains(!("enemy" || "big")))
+        XCTAssertFalse(text.contains(!("friend" || "big")))
+    }
 }
