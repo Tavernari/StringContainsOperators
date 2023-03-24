@@ -41,6 +41,12 @@ enum SearchStrategyMaker {
 
         case let .regexp(pattern):
             return RegexSearchStrategy(pattern: pattern)
+
+        case let .negatable(value):
+            return NegatableValueSearchStrategy(value: value)
+
+        case let .negatablePredicate(predicate):
+            return NegatablePredicateSearchStrategy(searchStrategy: self.make(predicate: predicate))
         }
     }
 }
