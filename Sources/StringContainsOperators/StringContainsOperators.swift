@@ -9,6 +9,7 @@ import Foundation
 infix operator || : LogicalDisjunctionPrecedence
 infix operator && : LogicalConjunctionPrecedence
 prefix operator ~
+prefix operator =~
 
 /// An enum representing a string search predicate.
 public indirect enum StringPredicate {
@@ -33,6 +34,10 @@ public indirect enum StringPredicate {
 
     /// Represents a case-insensitive and diacritic-insensitive search for a given string.
     case diacriticAndCaseInsensitive(String)
+
+    /// Represents a regular expression pattern that can be used to match a string using NSRegularExpression.
+    /// - Note: The String value should be a valid regular expression pattern.
+    case regexp(String)
 }
 
 /// Returns a `StringPredicate` that performs a logical OR operation between two strings.
@@ -89,6 +94,10 @@ public prefix func ~ (value: String) -> StringPredicate {
     return .diacriticAndCaseInsensitive(value)
 }
 
+public prefix func =~ (value: String) -> StringPredicate {
+
+    return .regexp(value)
+}
 
 public extension String {
 
