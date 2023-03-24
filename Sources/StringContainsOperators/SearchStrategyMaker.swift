@@ -39,6 +39,9 @@ enum SearchStrategyMaker {
         case let .diacriticAndCaseInsensitive(value):
             return DiacriticAndCaseInsensitiveSearchStrategy(value: value)
 
+        case let .regexp(pattern):
+            return RegexSearchStrategy(pattern: pattern)
+
         case let .negatable(value):
             return NegatableValueSearchStrategy(value: value)
 

@@ -103,6 +103,25 @@ final class StringContainsOperatorsTests: XCTestCase {
         XCTAssertFalse("Goodbye".contains(predicate))
     }
 
+    func testContainsWithRegexp() {
+
+        let string = "This is a test string"
+
+        let predicate = "test" && "string" && =~"is.a"
+
+        XCTAssertTrue(string.contains(predicate))
+
+        let invalidString = "This is not a valid string"
+        XCTAssertFalse(invalidString.contains(predicate))
+    }
+
+    func testWithInvalidRegexp() {
+
+        let string = "This is a test string"
+
+        XCTAssertFalse(string.contains(=~"^*$(dis.a"))
+    }
+
     func testNegatablePredicate() {
         let text = "Hello my little friend"
 
