@@ -36,6 +36,18 @@ print(result4) // true
 // Check if text contains "fox" AND ("Jumps" OR "swift") case insensitively and without diacritics
 let result5 = text.contains(~"fox" && (~"Jumps" || ~"swift"))
 print(result5) // true
+
+// Check if text does NOT contain "cat" AND "bird"
+let result6 = text.contains(!"cat" && !"bird")
+print(result6) // true
+
+// Check if text does NOT contain "brown"
+let result7 = text.contains(!"brown")
+print(result7) // false
+
+// Check if text does NOT contain "cat" case insensitively and without diacritics
+let result8 = text.contains(!~"cat")
+print(result8) // true
 ```
 
 ## How to Install

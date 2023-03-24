@@ -38,6 +38,12 @@ enum SearchStrategyMaker {
 
         case let .diacriticAndCaseInsensitive(value):
             return DiacriticAndCaseInsensitiveSearchStrategy(value: value)
+
+        case let .negatable(value):
+            return NegatableValueSearchStrategy(value: value)
+
+        case let .negatablePredicate(predicate):
+            return NegatablePredicateSearchStrategy(searchStrategy: self.make(predicate: predicate))
         }
     }
 }
