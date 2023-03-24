@@ -98,7 +98,8 @@ public extension String {
     /// - Returns: `true` if the string contains the `StringPredicate`, `false` otherwise.
     func contains(_ predicate: StringPredicate) -> Bool {
 
-        let strategy = SearchStrategyMaker.make(predicate: predicate)
-        return strategy.evaluate(string: self)
+        SearchStrategyMaker
+            .make(predicate: predicate)
+            .evaluate(string: self)
     }
 }
