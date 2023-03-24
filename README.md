@@ -48,6 +48,15 @@ print(result7) // false
 // Check if text does NOT contain "cat" case insensitively and without diacritics
 let result8 = text.contains(!~"cat")
 print(result8) // true
+
+// Check if text contains "quick" OR "jumps" AND "fox" using a regular expression
+let result9 = text.contains(=~"(quick|jumps).*fox")
+print(result9) // true
+
+// Check if text contains "jumps" OR "swift" AND "fox" using a regular expression
+let result10 = text.contains(=~"(jumps|swift).*fox")
+print(result10) // true
+
 ```
 
 ## How to Install
