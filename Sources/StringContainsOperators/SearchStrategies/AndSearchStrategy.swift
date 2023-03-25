@@ -10,23 +10,32 @@ import Foundation
 /// `AndSearchStrategy` is a type of `SearchStrategy` that searches for multiple `String`s with an "AND" condition.
 final class AndSearchStrategy: SearchStrategy {
 
-    /// The list of strings to be searched.
-    let strings: [String]
+    /// An array of StringPredicateInputKind to search.
+    let input: [StringPredicateInputKind]
 
-    /// Initializes a new instance of `AndSearchStrategy`.
-    ///
-    /// - Parameter strings: The list of strings to be searched.
-    init(strings: [String]) {
+    /// Initializes an instance of `AndSearchStrategy`.
+    /// - Parameter input: An array of StringPredicateInputKind to search.
+    init(input: [StringPredicateInputKind]) {
 
-        self.strings = strings
+        self.input = input
     }
 
     /// Evaluates if a given string contains all of the `String`s in the `strings` array.
     ///
     /// - Parameter string: The string to be evaluated.
     /// - Returns: `true` if the string contains all of the `String`s in the `strings` array, `false` otherwise.
-    func evaluate(string: String) -> Bool {
+    func evaluate(string: String) throws -> Bool {
 
-        return strings.allSatisfy(string.contains)
+        try self.input.allSatisfy { inputKind in
+
+            switch inputKind {
+
+            case let .string(value):
+                return string.contains(value)
+
+            case let .predicate(predicate):
+                return try string.contains(predicate)
+            }
+        }
     }
 }
