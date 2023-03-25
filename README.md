@@ -18,43 +18,43 @@ import StringContainsOperators
 let text = "The quick brown fox jumps over the lazy dog."
 
 // Check if text contains "quick" OR "jumps"
-let result1 = text.contains("quick" || "jumps")
+let result1 = try text.contains("quick" || "jumps")
 print(result1) // true
 
 // Check if text contains "fox" AND "dog"
-let result2 = text.contains("fox" && "dog")
+let result2 = try text.contains("fox" && "dog")
 print(result2) // true
 
 // Check if text contains "fox" AND ("jumps" OR "swift")
-let result3 = text.contains("fox" && ("jumps" || "swift"))
+let result3 = try text.contains("fox" && ("jumps" || "swift"))
 print(result3) // true
 
 // Check if text contains "Brown" OR "red" case insensitively and without diacritics
-let result4 = text.contains(~"Brown" || ~"red")
+let result4 = try text.contains(~"Brown" || ~"red")
 print(result4) // true
 
 // Check if text contains "fox" AND ("Jumps" OR "swift") case insensitively and without diacritics
-let result5 = text.contains(~"fox" && (~"Jumps" || ~"swift"))
+let result5 = try text.contains(~"fox" && (~"Jumps" || ~"swift"))
 print(result5) // true
 
 // Check if text does NOT contain "cat" AND "bird"
-let result6 = text.contains(!"cat" && !"bird")
+let result6 = try text.contains(!("cat" && "bird)")
 print(result6) // true
 
 // Check if text does NOT contain "brown"
-let result7 = text.contains(!"brown")
+let result7 = try text.contains(!"brown")
 print(result7) // false
 
 // Check if text does NOT contain "cat" case insensitively and without diacritics
-let result8 = text.contains(!~"cat")
+let result8 = try text.contains(!~"cat")
 print(result8) // true
 
 // Check if text contains "quick" OR "jumps" AND "fox" using a regular expression
-let result9 = text.contains(=~"(quick|jumps).*fox")
+let result9 = try text.contains(=~"(quick|jumps).*fox")
 print(result9) // true
 
 // Check if text contains "jumps" OR "swift" AND "fox" using a regular expression
-let result10 = text.contains(=~"(jumps|swift).*fox")
+let result10 = try text.contains(=~"(jumps|swift).*fox")
 print(result10) // true
 
 ```
@@ -66,7 +66,7 @@ print(result10) // true
 You can install StringContainsOperators using Swift Package Manager (SPM). Simply add the following line to your dependencies in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/Tavernari/StringContainsOperators.git", from: "1.1.1")
+.package(url: "https://github.com/Tavernari/StringContainsOperators.git", from: "1.3.0")
 ```
 
 ### Cocoapods
@@ -74,7 +74,7 @@ You can install StringContainsOperators using Swift Package Manager (SPM). Simpl
 You can also install StringContainsOperators using CocoaPods. Simply add the following line to your Podfile:
 
 ```ruby
-pod 'StringContainsOperators', '~> 1.1'
+pod 'StringContainsOperators', '~> 1.3'
 ```
 
 ## Contributions
