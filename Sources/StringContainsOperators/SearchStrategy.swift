@@ -14,5 +14,5 @@ protocol SearchStrategy {
     ///
     /// - Parameter string: The string to evaluate.
     /// - Returns: `true` if the string matches the search strategy, otherwise `false`.
-    func evaluate(string: String) -> Bool
+    func evaluate(string: String) throws -> Bool
 }

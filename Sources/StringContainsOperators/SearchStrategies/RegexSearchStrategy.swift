@@ -10,24 +10,40 @@ import Foundation
 /// A search strategy that evaluates whether a string matches a given regular expression pattern.
 final class RegexSearchStrategy: SearchStrategy {
 
-    /// The regular expression pattern to match.
-    let regex: NSRegularExpression?
+    enum InternalError: Error {
 
-    /// Creates a new instance of `RegexSearchStrategy` with the given regular expression pattern.
-    /// - Parameter pattern: The regular expression pattern to match.
-    init(pattern: String) {
+        case notAvailableToPredicates
+    }
 
-        self.regex = try? NSRegularExpression(pattern: pattern,
-                                             options: [])
+    /// An StringPredicateInputKind to search.
+    let input: StringPredicateInputKind
+
+    /// Initializes an instance of `RegexSearchStrategy`.
+    /// - Parameter input: An StringPredicateInputKind to search.
+    init(input: StringPredicateInputKind) {
+
+        self.input = input
     }
 
     /// Evaluates whether a string matches the regular expression pattern.
     /// - Parameter string: The string to evaluate.
     /// - Returns: `true` if the string matches the regular expression pattern, `false` otherwise.
-    func evaluate(string: String) -> Bool {
+    func evaluate(string: String) throws -> Bool {
 
-        let range = NSRange(location: 0, length: string.utf16.count)
-        return self.regex?.firstMatch(in: string, options: [], range: range) != nil
+        switch self.input {
+
+        case let .string(value):
+            let regex = try NSRegularExpression(pattern: value,
+                                                 options: [])
+            let range = NSRange(location: 0,
+                                length: string.utf16.count)
+            return regex.firstMatch(in: string,
+                                    options: [],
+                                    range: range) != nil
+
+        case .predicate:
+            throw InternalError.notAvailableToPredicates
+        }
     }
 }
 

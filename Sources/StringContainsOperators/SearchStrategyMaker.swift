@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 /// `SearchStrategyMaker` is a factory that produces `SearchStrategy` objects based on a given `StringPredicate`.
 enum SearchStrategyMaker {
 
@@ -18,35 +19,20 @@ enum SearchStrategyMaker {
 
         switch predicate {
 
-        case let .or(strings):
-            return OrSearchStrategy(strings: strings)
+        case let .or(input):
+            return OrSearchStrategy(input: input)
 
-        case let .orPredicates(value, predicate):
-            return OrPredicateSearchStrategy(value: value, predicate: predicate)
+        case let .and(input):
+            return AndSearchStrategy(input: input)
 
-        case let .orOnlyPredicates(predicates):
-            return OrOnlyPredicateSearchStrategy(predicates: predicates)
+        case let .diacriticAndCaseInsensitive(input):
+            return DiacriticAndCaseInsensitiveSearchStrategy(input: input)
 
-        case let .and(strings):
-            return AndSearchStrategy(strings: strings)
+        case let .regexp(input):
+            return RegexSearchStrategy(input: input)
 
-        case let .andPredicates(value, predicate):
-            return AndPredicateSearchStrategy(value: value, predicate: predicate)
-
-        case let .andOnlyPredicates(predicates):
-            return AndOnlyPredicateSearchStrategy(predicates: predicates)
-
-        case let .diacriticAndCaseInsensitive(value):
-            return DiacriticAndCaseInsensitiveSearchStrategy(value: value)
-
-        case let .regexp(pattern):
-            return RegexSearchStrategy(pattern: pattern)
-
-        case let .negatable(value):
-            return NegatableValueSearchStrategy(value: value)
-
-        case let .negatablePredicate(predicate):
-            return NegatablePredicateSearchStrategy(searchStrategy: self.make(predicate: predicate))
+        case let .negatable(input):
+            return NegatableSearchStrategy(input: input)
         }
     }
 }

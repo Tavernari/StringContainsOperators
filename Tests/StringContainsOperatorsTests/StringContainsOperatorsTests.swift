@@ -9,127 +9,140 @@ import XCTest
 
 final class StringContainsOperatorsTests: XCTestCase {
 
-    func testBaseStringPredicate() {
-           let predicate = "Hello" || "World"
-           XCTAssertTrue("Hello".contains(predicate))
-           XCTAssertTrue("World".contains(predicate))
-           XCTAssertFalse("Goodbye".contains(predicate))
+    func testBaseStringPredicate() throws {
+
+        let predicate = "Hello" || "World"
+        XCTAssertTrue(try "Hello".contains(predicate))
+        XCTAssertTrue(try "World".contains(predicate))
+        XCTAssertFalse(try "Goodbye".contains(predicate))
     }
 
-    func testOrStringPredicate() {
-       let predicate = "Hello" || "World" || "Goodbye"
-       XCTAssertTrue("Hello".contains(predicate))
-       XCTAssertTrue("World".contains(predicate))
-       XCTAssertTrue("Goodbye".contains(predicate))
-       XCTAssertFalse("Goodnight".contains(predicate))
+    func testOrStringPredicate() throws {
+
+        let predicate = "Hello" || "World" || "Goodbye"
+        XCTAssertTrue(try "Hello".contains(predicate))
+        XCTAssertTrue(try "World".contains(predicate))
+        XCTAssertTrue(try "Goodbye".contains(predicate))
+        XCTAssertFalse(try "Goodnight".contains(predicate))
     }
 
-    func testOrPredicates() {
-       let predicate = "Hello" || ("W" && "o" && "r" && "l" && "d")
-       XCTAssertTrue("Hello".contains(predicate))
-       XCTAssertTrue("World".contains(predicate))
-       XCTAssertFalse("Goodbye".contains(predicate))
-       XCTAssertFalse("Hey".contains(predicate))
+    func testOrPredicates() throws {
+
+        let predicate = "Hello" || ("W" && "o" && "r" && "l" && "d")
+        XCTAssertTrue(try "Hello".contains(predicate))
+        XCTAssertTrue(try "World".contains(predicate))
+        XCTAssertFalse(try "Goodbye".contains(predicate))
+        XCTAssertFalse(try "Hey".contains(predicate))
     }
 
-    func testAndStringPredicate() {
-       let predicate = "Hello" && "World"
-       XCTAssertTrue("HelloWorld".contains(predicate))
-       XCTAssertFalse("Hello".contains(predicate))
-       XCTAssertFalse("World".contains(predicate))
-       XCTAssertFalse("Goodbye".contains(predicate))
+    func testAndStringPredicate() throws {
+
+        let predicate = "Hello" && "World"
+        XCTAssertTrue(try "HelloWorld".contains(predicate))
+        XCTAssertFalse(try "Hello".contains(predicate))
+        XCTAssertFalse(try "World".contains(predicate))
+        XCTAssertFalse(try "Goodbye".contains(predicate))
     }
 
-    func testAndStringPredicateInsentitive() {
+    func testAndStringPredicateInsentitive() throws {
+
         let predicate = ~"Hello" && ~"World" && "Apple"
-        XCTAssertTrue("HeLLoWórld Apple".contains(predicate))
-        XCTAssertTrue("HelloWORLDApple".contains(predicate))
-        XCTAssertTrue("HÉLLoWorlD  Apple".contains(predicate))
-        XCTAssertFalse("ApplEGoodbyeWorld".contains(predicate))
+        XCTAssertTrue(try "HeLLoWórld Apple".contains(predicate))
+        XCTAssertTrue(try "HelloWORLDApple".contains(predicate))
+        XCTAssertTrue(try "HÉLLoWorlD  Apple".contains(predicate))
+        XCTAssertFalse(try "ApplEGoodbyeWorld".contains(predicate))
     }
    
-    func testAndPredicates() {
-       let predicate = "H" && ("e" || "i") && "llo"
-       XCTAssertTrue("Hello".contains(predicate))
-       XCTAssertTrue("Hillo".contains(predicate))
-       XCTAssertFalse("Hallo".contains(predicate))
-       XCTAssertFalse("Hiyo".contains(predicate))
+    func testAndPredicates() throws {
+
+        let predicate = "H" && ("e" || "i") && "llo"
+        XCTAssertTrue(try "Hello".contains(predicate))
+        XCTAssertTrue(try "Hillo".contains(predicate))
+        XCTAssertFalse(try "Hallo".contains(predicate))
+        XCTAssertFalse(try "Hiyo".contains(predicate))
     }
 
-    func testIndirectStringPredicate() {
-       let predicate = ("Hello" || "World") && "!"
-       XCTAssertTrue("Hello!".contains(predicate))
-       XCTAssertTrue("World!".contains(predicate))
-       XCTAssertFalse("Hello".contains(predicate))
+    func testIndirectStringPredicate() throws {
+
+        let predicate = ("Hello" || "World") && "!"
+        XCTAssertTrue(try "Hello!".contains(predicate))
+        XCTAssertTrue(try "World!".contains(predicate))
+        XCTAssertFalse(try "Hello".contains(predicate))
     }
 
-    func testNestedStringPredicate() {
-       let predicate = "Hello" || ("W" && ("o" || "i") && "r" && "l" && "d")
-       XCTAssertTrue("Hello".contains(predicate))
-       XCTAssertTrue("World".contains(predicate))
-       XCTAssertTrue("Wirld".contains(predicate))
-       XCTAssertFalse("Goodbye".contains(predicate))
+    func testNestedStringPredicate() throws {
+
+        let predicate = "Hello" || ("W" && ("o" || "i") && "r" && "l" && "d")
+        XCTAssertTrue(try "Hello".contains(predicate))
+        XCTAssertTrue(try "World".contains(predicate))
+        XCTAssertTrue(try "Wirld".contains(predicate))
+        XCTAssertFalse(try "Goodbye".contains(predicate))
     }
 
-    func testDiacriticInsensitiveLowercase() {
+    func testDiacriticInsensitiveLowercase() throws {
+
         let predicate = ~"héllo" || ~"wórld"
-        XCTAssertTrue("hello".contains(predicate))
-        XCTAssertTrue("world".contains(predicate))
-        XCTAssertFalse("goodbye".contains(predicate))
+        XCTAssertTrue(try "hello".contains(predicate))
+        XCTAssertTrue(try "world".contains(predicate))
+        XCTAssertFalse(try "goodbye".contains(predicate))
     }
 
-    func testDiacriticInsensitiveUppercase() {
+    func testDiacriticInsensitiveUppercase() throws {
+
         let predicate = ~"héllo" || ~"wórld"
-        XCTAssertTrue("HELLO".contains(predicate))
-        XCTAssertTrue("WORLD".contains(predicate))
-        XCTAssertFalse("GOODBYE".contains(predicate))
+        XCTAssertTrue(try "HELLO".contains(predicate))
+        XCTAssertTrue(try "WORLD".contains(predicate))
+        XCTAssertFalse(try "GOODBYE".contains(predicate))
     }
 
-    func testDiacriticInsensitiveMixedcase() {
+    func testDiacriticInsensitiveMixedcase() throws {
+
         let predicate = ~"héllo" || ~"wórld"
-        XCTAssertTrue("Hello".contains(predicate))
-        XCTAssertTrue("World".contains(predicate))
-        XCTAssertTrue("HeLLo".contains(predicate))
-        XCTAssertTrue("wORLD".contains(predicate))
-        XCTAssertFalse("Goodbye".contains(predicate))
+        XCTAssertTrue(try "Hello".contains(predicate))
+        XCTAssertTrue(try "World".contains(predicate))
+        XCTAssertTrue(try "HeLLo".contains(predicate))
+        XCTAssertTrue(try "wORLD".contains(predicate))
+        XCTAssertFalse(try "Goodbye".contains(predicate))
     }
 
-    func testDiacriticInsensitiveMixedcaseWithOtherChars() {
+    func testDiacriticInsensitiveMixedcaseWithOtherChars() throws {
+
         let predicate = ~"héllo" || ~"wórld"
-        XCTAssertTrue("Hello!".contains(predicate))
-        XCTAssertTrue("World?".contains(predicate))
-        XCTAssertTrue("HeLLo.".contains(predicate))
-        XCTAssertTrue("wORLD-".contains(predicate))
-        XCTAssertFalse("Goodbye".contains(predicate))
+        XCTAssertTrue(try "Hello!".contains(predicate))
+        XCTAssertTrue(try "World?".contains(predicate))
+        XCTAssertTrue(try "HeLLo.".contains(predicate))
+        XCTAssertTrue(try "wORLD-".contains(predicate))
+        XCTAssertFalse(try "Goodbye".contains(predicate))
     }
 
-    func testContainsWithRegexp() {
+    func testContainsWithRegexp() throws {
 
         let string = "This is a test string"
 
         let predicate = "test" && "string" && =~"is.a"
 
-        XCTAssertTrue(string.contains(predicate))
+        XCTAssertTrue(try string.contains(predicate))
 
         let invalidString = "This is not a valid string"
-        XCTAssertFalse(invalidString.contains(predicate))
+        XCTAssertFalse(try invalidString.contains(predicate))
     }
 
-    func testWithInvalidRegexp() {
+    func testWithInvalidRegexp() throws {
 
         let string = "This is a test string"
 
-        XCTAssertFalse(string.contains(=~"^*$(dis.a"))
+        XCTAssertThrowsError(try string.contains(=~"^*$(dis.a"))
     }
 
-    func testNegatablePredicate() {
+    func testNegatablePredicate() throws {
+
         let text = "Hello my little friend"
 
-        XCTAssertTrue(text.contains(!"fiance"))
-        XCTAssertFalse(text.contains(!"my"))
-        XCTAssertTrue(text.contains(!("enemy" && "little")))
-        XCTAssertFalse(text.contains(!("friend" && "little")))
-        XCTAssertTrue(text.contains(!("enemy" || "big")))
-        XCTAssertFalse(text.contains(!("friend" || "big")))
+        XCTAssertTrue(try text.contains(!"fiance"))
+        XCTAssertFalse(try text.contains(!"my"))
+        XCTAssertTrue(try text.contains(!("enemy" && "little")))
+        XCTAssertFalse(try text.contains(!("friend" && "little")))
+        XCTAssertTrue(try text.contains(!("enemy" || "big")))
+        XCTAssertFalse(try text.contains(!("friend" || "big")))
     }
 }
