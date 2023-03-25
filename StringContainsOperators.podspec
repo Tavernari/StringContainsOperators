@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "StringContainsOperators"
-  s.version      = "1.2.0"
+  s.version      = "1.3.0"
   s.summary      = "A Swift library for creating and evaluating complex string predicates using custom operators."
   s.description  = "StringContainsOperators provides custom operators and an enum type to create complex string predicates, which can be evaluated using the contains() function. This library is designed to be easy to use and flexible, allowing developers to create powerful string matching logic with minimal code."
   s.homepage     = "https://github.com/Tavernari/StringContainsOperators"
