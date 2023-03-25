@@ -10,26 +10,36 @@ import Foundation
 /// `DiacriticAndCaseInsensitiveSearchStrategy` is a type of `SearchStrategy` that searches for a `String` case-insensitively and without diacritics.
 final class DiacriticAndCaseInsensitiveSearchStrategy: SearchStrategy {
 
-    /// The string to be searched without diacritics and case-insensitively.
-    let value: String
+    enum InternalError: Error {
 
-    /// Initializes a new instance of `DiacriticAndCaseInsensitiveSearchStrategy`.
-    ///
-    /// - Parameter value: The string to be searched.
-    init(value: String) {
+        case notAvailableToPredicates
+    }
 
-        self.value = value.removeDiacriticsAndCase().lowercased()
+    /// An StringPredicateInputKind to search.
+    let input: StringPredicateInputKind
+
+    /// Initializes an instance of `DiacriticAndCaseInsensitiveSearchStrategy`.
+    /// - Parameter input: An StringPredicateInputKind to search.
+    init(input: StringPredicateInputKind) {
+
+        self.input = input
     }
 
     /// Evaluates if a given string contains the `value` string without diacritics and case-insensitively.
     ///
     /// - Parameter string: The string to be evaluated.
     /// - Returns: `true` if the string contains the `value` string without diacritics and case-insensitively, `false` otherwise.
-    func evaluate(string: String) -> Bool {
+    func evaluate(string: String) throws -> Bool {
 
-        return string
-            .removeDiacriticsAndCase()
-            .lowercased()
-            .contains(self.value)
+        switch self.input {
+
+        case let .string(value):
+            let string = string.removeDiacriticsAndCase().lowercased()
+            let value = value.removeDiacriticsAndCase().lowercased()
+            return string.contains(value)
+
+        case .predicate:
+            throw InternalError.notAvailableToPredicates
+        }
     }
 }

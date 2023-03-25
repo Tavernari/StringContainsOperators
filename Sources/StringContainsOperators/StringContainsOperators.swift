@@ -12,39 +12,31 @@ prefix operator ~
 prefix operator =~
 prefix operator !
 
+
+public enum StringPredicateInputKind {
+
+    case string(String)
+    case predicate(StringPredicate)
+}
+
 /// An enum representing a string search predicate.
 public indirect enum StringPredicate {
 
     /// Represents a logical OR operation between multiple strings.
-    case or([String])
-
-    /// Represents a logical OR operation between a string and a `StringPredicate`.
-    case orPredicates(String, StringPredicate)
-
-    /// Represents a logical OR operation between multiple `StringPredicate`s.
-    case orOnlyPredicates([StringPredicate])
+    case or([StringPredicateInputKind])
 
     /// Represents a logical AND operation between multiple strings.
-    case and([String])
-
-    /// Represents a logical AND operation between a string and a `StringPredicate`.
-    case andPredicates(String, StringPredicate)
-
-    /// Represents a logical AND operation between multiple `StringPredicate`s.
-    case andOnlyPredicates([StringPredicate])
+    case and([StringPredicateInputKind])
 
     /// Represents a case-insensitive and diacritic-insensitive search for a given string.
-    case diacriticAndCaseInsensitive(String)
+    case diacriticAndCaseInsensitive(StringPredicateInputKind)
 
     /// Represents a regular expression pattern that can be used to match a string using NSRegularExpression.
     /// - Note: The String value should be a valid regular expression pattern.
-    case regexp(String)
+    case regexp(StringPredicateInputKind)
     
     /// Represents a negatable search predicate for a given string.
-    case negatable(String)
-
-    /// Represents a negatable search predicate for a given `StringPredicate`.
-    case negatablePredicate(StringPredicate)
+    case negatable(StringPredicateInputKind)
 }
 
 /// Returns a `StringPredicate` that performs a logical OR operation between two strings.
@@ -54,7 +46,7 @@ public indirect enum StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical OR operation between two strings.
 public func || (lhs: String, rhs: String) -> StringPredicate {
 
-    return .or([lhs, rhs])
+    return .or([.string(lhs), .string(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical OR operation between a string and a `StringPredicate`.
@@ -64,7 +56,7 @@ public func || (lhs: String, rhs: String) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical OR operation between a string and a `StringPredicate`.
 public func || (lhs: String, rhs: StringPredicate) -> StringPredicate {
 
-    return .orPredicates(lhs, rhs)
+    return .or([.string(lhs), .predicate(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical OR operation between a `StringPredicate` and a string.
@@ -74,7 +66,7 @@ public func || (lhs: String, rhs: StringPredicate) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical OR operation between a `StringPredicate` and a string.
 public func || (lhs: StringPredicate, rhs: String) -> StringPredicate {
 
-    return .orPredicates(rhs, lhs)
+    return .or([.predicate(lhs), .string(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical OR operation between two `StringPredicate`s.
@@ -84,7 +76,7 @@ public func || (lhs: StringPredicate, rhs: String) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical OR operation between two `StringPredicate`s.
 public func || (lhs: StringPredicate, rhs: StringPredicate) -> StringPredicate {
 
-    return .orOnlyPredicates([rhs, lhs])
+    return .or([.predicate(lhs), .predicate(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical AND operation between two strings.
@@ -94,7 +86,7 @@ public func || (lhs: StringPredicate, rhs: StringPredicate) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical AND operation between two strings.
 public func && (lhs: String, rhs: String) -> StringPredicate {
 
-    return .and([lhs, rhs])
+    return .and([.string(lhs), .string(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical AND operation between a string and a `StringPredicate`.
@@ -104,7 +96,7 @@ public func && (lhs: String, rhs: String) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical AND operation between a string and a `StringPredicate`.
 public func && (lhs: String, rhs: StringPredicate) -> StringPredicate {
 
-    return .andPredicates(lhs, rhs)
+    return .and([.string(lhs), .predicate(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical AND operation between a `StringPredicate` and a string.
@@ -114,7 +106,7 @@ public func && (lhs: String, rhs: StringPredicate) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a logical AND operation between a `StringPredicate` and a string.
 public func && (lhs: StringPredicate, rhs: String) -> StringPredicate {
 
-    return .andPredicates(rhs, lhs)
+    return .and([.predicate(lhs), .string(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a logical AND operation between two `StringPredicate`s.
@@ -124,7 +116,7 @@ public func && (lhs: StringPredicate, rhs: String) -> StringPredicate {
 /// - Returns: A `StringPredicate
 public func && (lhs: StringPredicate, rhs: StringPredicate) -> StringPredicate {
 
-    return .andOnlyPredicates([rhs, lhs])
+    return .and([.predicate(lhs), .predicate(rhs)])
 }
 
 /// Returns a `StringPredicate` that performs a case-insensitive and diacritic-insensitive search for a given string.
@@ -133,16 +125,16 @@ public func && (lhs: StringPredicate, rhs: StringPredicate) -> StringPredicate {
 /// - Returns: A `StringPredicate` that performs a case-insensitive and diacritic-insensitive search for a given string.
 public prefix func ~ (value: String) -> StringPredicate {
 
-    return .diacriticAndCaseInsensitive(value)
+    return .diacriticAndCaseInsensitive(.string(value))
 }
 
 /// Returns a `StringPredicate` that performs a regular expression pattern that can be used to match a string using NSRegularExpression.
 ///
-/// - Parameter value: The regular expression pattern as a string value.
+/// - Parameter pattern: The regular expression pattern as a string value.
 /// - Returns: A `StringPredicate` that can be used to perform regular expression pattern matching.
-public prefix func =~ (value: String) -> StringPredicate {
+public prefix func =~ (pattern: String) -> StringPredicate {
 
-    return .regexp(value)
+    return .regexp(.string(pattern))
 }
 
 /// Returns a `StringPredicate` that negates another `StringPredicate`.
@@ -151,7 +143,7 @@ public prefix func =~ (value: String) -> StringPredicate {
 /// - Returns: A `StringPredicate` that represents the negation of the given predicate.
 public prefix func ! (predicate: StringPredicate) -> StringPredicate {
 
-    return .negatablePredicate(predicate)
+    return .negatable(.predicate(predicate))
 }
 
 /// Returns a `StringPredicate` that negates a given value.
@@ -160,7 +152,7 @@ public prefix func ! (predicate: StringPredicate) -> StringPredicate {
 /// - Returns: A `StringPredicate` that represents the negation of the given value.
 public prefix func ! (value: String) -> StringPredicate {
 
-    return .negatable(value)
+    return .negatable(.string(value))
 }
 
 public extension String {
@@ -169,10 +161,10 @@ public extension String {
     ///
     /// - Parameter predicate: The `StringPredicate` to search for.
     /// - Returns: `true` if the string contains the `StringPredicate`, `false` otherwise.
-    func contains(_ predicate: StringPredicate) -> Bool {
+    func contains(_ predicate: StringPredicate) throws -> Bool {
 
-        SearchStrategyMaker
-            .make(predicate: predicate)
-            .evaluate(string: self)
+        try SearchStrategyMaker
+                .make(predicate: predicate)
+                .evaluate(string: self)
     }
 }
