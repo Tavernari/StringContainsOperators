@@ -33,6 +33,9 @@ enum SearchStrategyMaker {
 
         case let .negatable(input):
             return NegatableSearchStrategy(input: input)
+
+        case let .prefix(input):
+            return PrefixSearchStrategy(input: input)
         }
     }
 }

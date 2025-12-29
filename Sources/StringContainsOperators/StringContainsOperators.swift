@@ -11,6 +11,7 @@ infix operator && : LogicalConjunctionPrecedence
 prefix operator ~
 prefix operator =~
 prefix operator !
+prefix operator ^
 
 
 public enum StringPredicateInputKind {
@@ -37,6 +38,9 @@ public indirect enum StringPredicate {
     
     /// Represents a negatable search predicate for a given string.
     case negatable(StringPredicateInputKind)
+
+    /// Represents a prefix search - checks if a string starts with a given value.
+    case prefix(StringPredicateInputKind)
 }
 
 /// Returns a `StringPredicate` that performs a logical OR operation between two strings.
@@ -153,6 +157,24 @@ public prefix func ! (predicate: StringPredicate) -> StringPredicate {
 public prefix func ! (value: String) -> StringPredicate {
 
     return .negatable(.string(value))
+}
+
+/// Returns a `StringPredicate` that checks if a string starts with a given value.
+///
+/// - Parameter value: The value to check as a prefix.
+/// - Returns: A `StringPredicate` that checks if the string starts with the given value.
+public prefix func ^ (value: String) -> StringPredicate {
+
+    return .prefix(.string(value))
+}
+
+/// Returns a `StringPredicate` that checks if a string starts with a value from another predicate.
+///
+/// - Parameter predicate: The predicate to check as a prefix.
+/// - Returns: A `StringPredicate` that checks if the string starts with the given predicate.
+public prefix func ^ (predicate: StringPredicate) -> StringPredicate {
+
+    return .prefix(.predicate(predicate))
 }
 
 public extension String {

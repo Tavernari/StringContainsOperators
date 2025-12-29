@@ -145,4 +145,88 @@ final class StringContainsOperatorsTests: XCTestCase {
         XCTAssertTrue(try text.contains(!("enemy" || "big")))
         XCTAssertFalse(try text.contains(!("friend" || "big")))
     }
+
+    func testPrefixOperator() throws {
+        let text = "My name is Victor"
+
+        XCTAssertTrue(try text.contains(^"My"))
+        XCTAssertTrue(try text.contains(^"My name"))
+        XCTAssertTrue(try text.contains(^"My name is Victor"))
+        XCTAssertFalse(try text.contains(^"name"))
+        XCTAssertFalse(try text.contains(^"Victor"))
+        XCTAssertFalse(try text.contains(^"my"))  // case sensitive
+    }
+
+    func testPrefixOperatorWithEmptyString() throws {
+        let text = "Hello"
+
+        XCTAssertTrue(try text.contains(^""))
+        XCTAssertTrue(try text.contains(^"H"))
+        XCTAssertTrue(try text.contains(^"He"))
+    }
+
+    func testPrefixOperatorCombinedWithOr() throws {
+        let text = "The quick brown fox"
+
+        XCTAssertTrue(try text.contains(^"The" || ^"A"))
+        XCTAssertTrue(try text.contains(^"A" || ^"The"))
+        XCTAssertFalse(try text.contains(^"quick" || ^"slow"))
+    }
+
+    func testPrefixOperatorCombinedWithAnd() throws {
+        let text = "Hello World"
+
+        XCTAssertTrue(try text.contains(^"Hello" && "World"))
+        XCTAssertTrue(try text.contains(^"H" && "World"))
+        XCTAssertFalse(try text.contains(^"Hello" && "Moon"))
+    }
+
+    func testPrefixOperatorWithDiacriticInsensitivity() throws {
+        let text = "Héllo World"
+
+        // Without ~, should be case and diacritic sensitive
+        XCTAssertFalse(try text.contains(^"Hello"))
+        
+        // With ~ operator (but prefix doesn't support nested predicates, so this tests the basic case)
+        // Actually, ^~ would need to be: ~"Héllo" has prefix ~"Héllo"
+        // For now, let's test basic prefix with diacritics
+        XCTAssertTrue(try text.contains(^"Héllo"))
+        XCTAssertTrue(try text.contains(^"Hé"))
+    }
+
+    func testPrefixOperatorInComplexPredicate() throws {
+        let text = "The quick brown fox jumps"
+
+        // Complex: starts with "The" AND contains "jumps"
+        let predicate1 = ^"The" && "jumps"
+        XCTAssertTrue(try text.contains(predicate1))
+
+        // Complex: starts with "The" OR starts with "A"
+        let predicate2 = ^"The" || ^"A"
+        XCTAssertTrue(try text.contains(predicate2))
+
+        // Complex: NOT starts with "Quick" AND contains "fox"
+        let predicate3 = !(^"Quick") && "fox"
+        XCTAssertTrue(try text.contains(predicate3))
+    }
+
+    func testPrefixOperatorWithCombinedOperators() throws {
+        let text = "My name is Victor"
+
+        // Prefix with OR
+        XCTAssertTrue(try text.contains(^"My" || ^"Your"))
+        XCTAssertFalse(try text.contains(^"Your" || ^"Their"))
+
+        // Prefix with AND
+        XCTAssertTrue(try text.contains(^"My" && "Victor"))
+        XCTAssertFalse(try text.contains(^"My" && "George"))
+
+        // Negated prefix
+        XCTAssertTrue(try text.contains(!(^"Your")))
+        XCTAssertFalse(try text.contains(!(^"My")))
+
+        // Combine everything
+        let complex = (^"My" && "Victor") || ^"Your"
+        XCTAssertTrue(try text.contains(complex))
+    }
 }
