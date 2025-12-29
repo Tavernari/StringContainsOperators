@@ -36,6 +36,9 @@ enum SearchStrategyMaker {
 
         case let .prefix(input):
             return PrefixSearchStrategy(input: input)
+
+        case let .suffix(input):
+            return SuffixSearchStrategy(input: input)
         }
     }
 }

@@ -56,8 +56,8 @@ let result = !(text.contains("cat") && text.contains("bird"))
 let result = try text.contains(!("cat" && "bird"))
 ```
 
-## `^` Operator
-The ^ operator checks if a string starts with a given value (prefix check). It returns a StringPredicate that represents the prefix search condition.
+## `^` Operator (Prefix)
+The ^ operator (when used as a prefix) checks if a string starts with a given value (prefix check). It returns a StringPredicate that represents the prefix search condition.
 
 ```swift
 // Swift native implementation
@@ -65,6 +65,17 @@ let result = text.hasPrefix("My")
 
 // StringContainsOperators implementation
 let result = try text.contains(^"My")
+```
+
+## `^` Operator (Suffix)
+When used as a postfix operator, ^ checks if a string ends with a given value (suffix check). It returns a StringPredicate that represents the suffix search condition.
+
+```swift
+// Swift native implementation
+let result = text.hasSuffix("Victor")
+
+// StringContainsOperators implementation
+let result = try text.contains("Victor"^)
 ```
 
 ## `=~` Operator
@@ -132,9 +143,17 @@ print(result9) // true
 let result10 = try text.contains(^"The" && "fox")
 print(result10) // true
 
-// Check if text contains "quick" OR "jumps" AND "fox" using a regular expression
-let result11 = try text.contains(=~"(quick|jumps).*fox")
+// Check if text ends with "dog"
+let result11 = try text.contains("dog"^)
 print(result11) // true
+
+// Check if text ends with "fox" AND contains "quick"
+let result12 = try text.contains("fox"^ && "quick")
+print(result12) // true
+
+// Check if text contains "quick" OR "jumps" AND "fox" using a regular expression
+let result13 = try text.contains(=~"(quick|jumps).*fox")
+print(result13) // true
 
 // Check if text contains "jumps" OR "swift" AND "fox" using a regular expression
 let result12 = try text.contains(=~"(jumps|swift).*fox")

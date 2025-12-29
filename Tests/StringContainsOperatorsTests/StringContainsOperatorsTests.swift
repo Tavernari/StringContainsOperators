@@ -229,4 +229,102 @@ final class StringContainsOperatorsTests: XCTestCase {
         let complex = (^"My" && "Victor") || ^"Your"
         XCTAssertTrue(try text.contains(complex))
     }
+
+    func testSuffixOperator() throws {
+        let text = "My name is Victor"
+
+        XCTAssertTrue(try text.contains("Victor"^))
+        XCTAssertTrue(try text.contains("is Victor"^))
+        XCTAssertTrue(try text.contains("My name is Victor"^))
+        XCTAssertFalse(try text.contains("My"^))
+        XCTAssertFalse(try text.contains("Victor "^))
+        XCTAssertFalse(try "".contains("Victor"^))
+    }
+
+    func testSuffixOperatorWithEmptyString() throws {
+        let text = "Hello"
+
+        XCTAssertTrue(try text.contains(""^))
+        XCTAssertTrue(try text.contains("o"^))
+        XCTAssertTrue(try text.contains("lo"^))
+    }
+
+    func testSuffixOperatorCombinedWithOr() throws {
+        let text = "The quick brown fox"
+
+        XCTAssertTrue(try text.contains("fox"^ || "dog"^))
+        XCTAssertTrue(try text.contains("dog"^ || "fox"^))
+        XCTAssertFalse(try text.contains("cat"^ || "dog"^))
+    }
+
+    func testSuffixOperatorCombinedWithAnd() throws {
+        let text = "Hello World"
+
+        XCTAssertTrue(try text.contains("World"^ && "Hello"))
+        XCTAssertTrue(try text.contains("ld"^ && "Hello"))
+        XCTAssertFalse(try text.contains("World"^ && "Moon"))
+    }
+
+    func testSuffixOperatorWithDiacriticInsensitivity() throws {
+        let text = "Bonjour Monsièur"
+
+        // Without ~, should be case and diacritic sensitive
+        XCTAssertFalse(try text.contains("Monsieur"^))
+        
+        // Basic suffix with diacritics
+        XCTAssertTrue(try text.contains("Monsièur"^))
+        XCTAssertTrue(try text.contains("sièur"^))
+    }
+
+    func testSuffixOperatorInComplexPredicate() throws {
+        let text = "The quick brown fox jumps"
+
+        // Complex: ends with "jumps" AND contains "brown"
+        let predicate1 = "jumps"^ && "brown"
+        XCTAssertTrue(try text.contains(predicate1))
+
+        // Complex: ends with "jumps" OR ends with "fox"
+        let predicate2 = "jumps"^ || "fox"^
+        XCTAssertTrue(try text.contains(predicate2))
+
+        // Complex: NOT ends with "quick" AND contains "fox"
+        let predicate3 = !("quick"^) && "fox"
+        XCTAssertTrue(try text.contains(predicate3))
+    }
+
+    func testSuffixOperatorWithCombinedOperators() throws {
+        let text = "My name is Victor"
+
+        // Suffix with OR
+        XCTAssertTrue(try text.contains("Victor"^ || "George"^))
+        XCTAssertFalse(try text.contains("George"^ || "Michael"^))
+
+        // Suffix with AND
+        XCTAssertTrue(try text.contains("Victor"^ && "My"))
+        XCTAssertFalse(try text.contains("Victor"^ && "George"))
+
+        // Negated suffix
+        XCTAssertTrue(try text.contains(!("George"^)))
+        XCTAssertFalse(try text.contains(!("Victor"^)))
+
+        // Combine everything
+        let complex = ("Victor"^ && "My") || "George"^
+        XCTAssertTrue(try text.contains(complex))
+    }
+
+    func testPrefixAndSuffixOperatorsTogether() throws {
+        let text = "My name is Victor"
+
+        // Check both prefix and suffix
+        XCTAssertTrue(try text.contains(^"My"))
+        XCTAssertTrue(try text.contains("Victor"^))
+        
+        // Combined
+        XCTAssertTrue(try text.contains(^"My" && "Victor"^))
+        XCTAssertTrue(try text.contains(^"My" || "George"^))
+        
+        // Complex
+        let predicate = (^"My" && "Victor"^) || ^"Your" && "George"^
+        XCTAssertTrue(try text.contains(predicate))
+    }
 }
